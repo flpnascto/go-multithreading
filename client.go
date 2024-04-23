@@ -20,16 +20,16 @@ func main() {
 		println("Tempo de 1 segundo excedido")
 		return
 	default:
-		go fetchBrasilApi("13330250", c1)
-		go fetchViaCepApi("13330250", c1)
+		go fetchBrasilApi("13330250", c1, ctx)
+		go fetchViaCepApi("13330250", c1, ctx)
 	}
 
 	readChannel(c1)
 }
 
-func fetchBrasilApi(cep string, c chan string) {
+func fetchBrasilApi(cep string, c chan string, ctx context.Context) {
 	endpoint := "https://brasilapi.com.br/api/cep/v1/" + cep
-	req, err := http.NewRequest("GET", endpoint, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -46,9 +46,9 @@ func fetchBrasilApi(cep string, c chan string) {
 	channelReciver(result, c)
 }
 
-func fetchViaCepApi(cep string, c chan string) {
+func fetchViaCepApi(cep string, c chan string, ctx context.Context) {
 	endpoint := "http://viacep.com.br/ws/" + cep + "/json"
-	req, err := http.NewRequest("GET", endpoint, nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint, nil)
 	if err != nil {
 		panic(err)
 	}
